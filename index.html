@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>HSE Performance Dashboard EKU 2026-2040 EDITABLE FINAL</title>
+<style>
+:root{--bg:#0f1724;--bg2:#111a2b;--card:#182338;--panel:rgba(24,35,56,.78);--header:rgba(15,23,36,.92);--text:#e6edf7;--muted:#9aa9c0;--line:#2b3a55;--accent:#22d3ee;--accent2:#38bdf8;--good:#22c55e;--warn:#f59e0b;--bad:#ef4444;--purple:#a78bfa;--pink:#f472b6;--lime:#a3e635}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Roboto,Arial,sans-serif;background:radial-gradient(circle at top left,var(--card) 0%,var(--bg) 45%,#0b111b 100%);color:var(--text);min-height:100vh}
+header{position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);background:var(--header);border-bottom:1px solid var(--line);padding:12px 16px}
+.header-inner{max-width:1780px;margin:auto;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.header-left{display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 480px}
+#logoImg{display:none;max-height:52px;max-width:180px;object-fit:contain;border-radius:10px;background:rgba(255,255,255,.06);padding:4px}
+.brand{min-width:0}.brand h1{margin:0;font-size:20px}.brand p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.ver-badge{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#041018;font-size:11px;font-weight:800;vertical-align:middle}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end}
+.actions-group{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select,input[type=search],input[type=number],input[type=file],input[type=text],input[type=color],textarea{border:1px solid var(--line);background:var(--bg2);color:var(--text);border-radius:12px;padding:9px 12px;font-size:13px;outline:none;font-family:inherit}
+textarea{resize:vertical;min-height:70px}
+button{cursor:pointer;transition:.18s;font-weight:650;white-space:nowrap}
+button:hover{transform:translateY(-1px);border-color:#43608f}
+button.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#041018;border:none}
+button.secondary{background:#1f2f47}
+button.success{background:#14532d;color:#bbf7d0;border-color:#166534}
+button.danger{background:#7f1d1d;color:#ffe4e6;border-color:#991b1b}
+button.settings-btn{background:linear-gradient(135deg,#f59e0b,#f472b6);color:#1a1025;border:none;font-weight:800;box-shadow:0 6px 18px rgba(244,114,182,.35)}
+button.small{padding:7px 10px;font-size:12px}
+.float-settings{position:fixed;right:18px;bottom:18px;z-index:70;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;background:linear-gradient(135deg,#f59e0b,#f472b6);color:#1a1025;border:none;box-shadow:0 12px 30px rgba(0,0,0,.45);cursor:pointer;font-weight:800}
+.container{max-width:1780px;margin:auto;padding:16px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:14px;box-shadow:0 10px 30px rgba(0,0,0,.16)}
+.filters,.entry-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.check{display:flex;align-items:center;gap:8px;min-height:42px;background:#101828;border:1px solid var(--line);border-radius:12px;padding:0 12px;cursor:pointer}
+.info-bar{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;margin-bottom:12px}
+.entry-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.status{margin-top:10px;font-size:12px;color:#bbf7d0;min-height:18px}
+.error{display:none;background:#7f1d1d;color:#fecaca;border:1px solid #991b1b;padding:12px;border-radius:12px;margin-bottom:12px;font-size:12px;white-space:pre-wrap}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:16px}
+.card{background:linear-gradient(180deg,rgba(24,35,56,.96),rgba(20,29,46,.96));border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);position:relative;overflow:hidden}
+.card:before{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:4px;background:linear-gradient(90deg,var(--accent),var(--purple),var(--good));opacity:.8}
+.label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.45px;margin-bottom:8px}
+.value{font-size:24px;font-weight:800;line-height:1.1;margin-bottom:6px}.sub{color:var(--muted);font-size:11px}
+.badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:750}
+.badge.zero{background:#14532d;color:#bbf7d0}.badge.issue{background:#7f1d1d;color:#fecaca}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px;margin-bottom:16px}
+.chart-card{min-height:380px}.chart-body{margin-top:8px}
+.svgchart{width:100%;height:300px;display:block}
+.svgchart .grid{stroke:rgba(148,163,184,.18);stroke-width:1}.svgchart .axis-line{stroke:rgba(148,163,184,.38);stroke-width:1}
+.svgchart text{fill:#cbd5e1;font-size:12px;font-family:"Segoe UI",Roboto,Arial,sans-serif}.svgchart .chart-val{fill:#e6edf7;font-size:11px;font-weight:650}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 8px;font-size:11px;color:var(--muted)}.legend-item{display:inline-flex;align-items:center;gap:6px}.legend-item i{display:inline-block;width:10px;height:10px;border-radius:3px}
+.section-title{margin:20px 0 10px;font-size:17px;font-weight:850;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.section-title span{color:var(--muted);font-size:12px;font-weight:500}
+.table-wrap{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:auto;max-height:540px}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:1150px}
+thead th{position:sticky;top:0;z-index:5;background:#233554;color:#dbeafe;text-align:left;padding:10px;border-bottom:1px solid var(--line);white-space:nowrap}
+tbody td{padding:9px;border-bottom:1px solid rgba(148,163,184,.12);white-space:nowrap}
+tbody tr:hover{background:rgba(56,189,248,.08)}tbody tr.clickable{cursor:pointer}
+.num{text-align:right;font-variant-numeric:tabular-nums}.center{text-align:center}.muted{color:var(--muted)}.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.notes{margin-top:16px;color:var(--muted);font-size:12px;line-height:1.6;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:80}
+.settings-panel{position:fixed;top:0;right:-500px;width:480px;max-width:96vw;height:100vh;background:#0f172a;border-left:1px solid var(--line);z-index:90;transition:.25s ease;display:flex;flex-direction:column;box-shadow:-20px 0 50px rgba(0,0,0,.4)}
+.settings-panel.open{right:0}
+.settings-head{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;background:#111a2b}
+.settings-head h2{margin:0;font-size:16px}
+.settings-tabs{display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:#0d1626}
+.tab-btn{padding:7px 10px;border-radius:999px;background:#182338;border:1px solid var(--line);color:var(--text);font-size:11px}
+.tab-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#041018;border-color:transparent}
+.settings-body{padding:12px;overflow:auto;flex:1}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.setting-block{margin-bottom:12px;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(17,26,43,.72)}
+.setting-block h3{margin:0 0 10px;font-size:13px;color:var(--accent)}
+.setting-row{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.setting-row.inline{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+.setting-row label{font-size:11px;color:var(--muted)}
+.logo-preview{display:flex;align-items:center;gap:10px;margin-top:8px}
+.logo-preview img{max-height:54px;max-width:150px;object-fit:contain;border:1px solid var(--line);border-radius:10px;padding:4px;background:rgba(255,255,255,.05);display:none}
+.preset-buttons{display:flex;flex-wrap:wrap;gap:8px}
+@media(max-width:820px){.value{font-size:20px}.charts{grid-template-columns:1fr}.header-inner{align-items:flex-start}table{min-width:950px}}
+@media print{header,.filters,.actions,.info-bar,.notes,.no-print,.entry-panel,.settings-overlay,.settings-panel,.float-settings{display:none!important}body{background:#fff;color:#000}.card,.table-wrap,.panel{box-shadow:none;border:1px solid #ccc;background:#fff}thead th{background:#eee;color:#000}tbody td{border-bottom:1px solid #ddd}.svgchart text{fill:#000}.svgchart .grid{stroke:#ddd}.svgchart .axis-line{stroke:#999}}
+</style>
+</head>
+<body>
+<header id="appHeader">
+  <div class="header-inner">
+    <div class="header-left">
+      <img id="logoImg" alt="Logo"/>
+      <div class="brand">
+        <h1 id="headerTitle">HSE Performance Dashboard — EKU 2026-2040<span class="ver-badge">vEDIT-FINAL</span></h1>
+        <p id="headerSubtitle">Offline 1 file HTML — versi EDITABLE (header, logo, teks, modul, warna bisa diatur)</p>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="settings-btn" id="settingsBtnHeader" onclick="toggleSettings(true)">⚙ Pengaturan</button>
+      <div id="mainActions" class="actions-group">
+        <button class="primary" onclick="exportExcel()">Unduh Excel (.xls)</button>
+        <button class="secondary" onclick="exportJson()">Export JSON</button>
+        <button class="secondary" onclick="document.getElementById('importFile').click()">Import JSON</button>
+        <button class="success" onclick="saveNow()">Simpan Manual</button>
+        <button class="danger" onclick="resetYear()">Reset Tahun Ini</button>
+        <button class="danger" onclick="resetAll()">Reset Semua Tahun</button>
+        <button class="secondary" onclick="window.print()">Cetak / PDF</button>
+      </div>
+      <input id="importFile" type="file" accept=".json,application/json" hidden/>
+    </div>
+  </div>
+</header>
+
+<button class="float-settings" id="floatSettings" title="Buka Pengaturan" onclick="toggleSettings(true)">⚙</button>
+
+<div class="container">
+  <div id="initError" class="error"></div>
+
+  <section id="filtersSection" class="panel filters no-print">
+    <div class="section-title" style="margin-top:0" id="filterSectionTitle">Filter Dashboard</div>
+    <div class="field"><label for="yearFilter">Tahun</label>
+      <select id="yearFilter"><option value="2026" selected>2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option><option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option><option value="2036">2036</option><option value="2037">2037</option><option value="2038">2038</option><option value="2039">2039</option><option value="2040">2040</option></select>
+    </div>
+    <div class="field"><label for="monthFilter">Bulan</label>
+      <select id="monthFilter"><option value="all" selected>Semua Bulan</option><option value="Jan">Januari</option><option value="Feb">Februari</option><option value="Mar">Maret</option><option value="Apr">April</option><option value="Mei">Mei</option><option value="Jun">Juni</option><option value="Jul">Juli</option><option value="Agu">Agustus</option><option value="Sep">September</option><option value="Okt">Oktober</option><option value="Nov">November</option><option value="Des">Desember</option></select>
+    </div>
+    <div class="field"><label for="weekFilter">Minggu</label>
+      <select id="weekFilter"><option value="all" selected>Semua Minggu</option><option value="1">Week 1</option><option value="2">Week 2</option><option value="3">Week 3</option><option value="4">Week 4</option><option value="5">Week 5</option></select>
+    </div>
+    <div class="field"><label for="searchBox">Cari Bulan</label><input id="searchBox" type="search" placeholder="Contoh: Januari, Des, Nov"/></div>
+    <label class="check"><input id="showZero" type="checkbox"/> Tampilkan minggu/bulan bernilai nol</label>
+  </section>
+
+  <div class="info-bar">
+    <div id="filterInfo">Menampilkan semua data tahun terpilih.</div>
+    <div class="muted" id="sourceInfo">Sumber data: Excel EKU 2026 + Desember & tahun 2027-2040 siap input manual</div>
+  </div>
+
+  <section id="inputSection" class="panel entry-panel no-print">
+    <div class="section-title" style="margin-top:0;"><span id="inputSectionTitle">Input Data Manual</span> <span id="inputSectionHint">(pilih tahun, bulan, minggu, lalu simpan)</span></div>
+    <form id="entryForm" onsubmit="event.preventDefault(); saveEntry();">
+      <div class="entry-grid">
+        <div class="field"><label for="eYear">Tahun Input</label><select id="eYear"><option value="2026" selected>2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option><option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option><option value="2036">2036</option><option value="2037">2037</option><option value="2038">2038</option><option value="2039">2039</option><option value="2040">2040</option></select></div>
+        <div class="field"><label for="eMonth">Bulan Input</label><select id="eMonth"><option value="Jan" selected>Januari</option><option value="Feb">Februari</option><option value="Mar">Maret</option><option value="Apr">April</option><option value="Mei">Mei</option><option value="Jun">Juni</option><option value="Jul">Juli</option><option value="Agu">Agustus</option><option value="Sep">September</option><option value="Okt">Oktober</option><option value="Nov">November</option><option value="Des">Desember</option></select></div>
+        <div class="field"><label for="eWeek">Minggu Input</label><select id="eWeek"><option value="1" selected>Week 1</option><option value="2">Week 2</option><option value="3">Week 3</option><option value="4">Week 4</option><option value="5">Week 5</option></select></div>
+        <div class="field"><label for="eMp">Man Power</label><input id="eMp" type="number" min="0" step="1" value="0"/></div>
+        <div class="field"><label for="eMh">Man Hours</label><input id="eMh" type="number" min="0" step="1" value="0"/></div>
+        <div class="field"><label for="eNm">Near Miss</label><input id="eNm" type="number" min="0" step="1" value="0"/></div>
+        <div class="field"><label for="ePd">Property Damage</label><input id="ePd" type="number" min="0" step="1" value="0"/></div>
+        <div class="field"><label for="eCr">Cidera Ringan</label><input id="eCr" type="number" min="0" step="1" value="0"/></div>
+        <div class="field"><label for="eCb">Cidera Berat</label><input id="eCb" type="number" min="0" step="1" value="0"/></div>
+        <div class="field"><label for="eFt">Fatality</label><input id="eFt" type="number" min="0" step="1" value="0"/></div>
+        <div class="field"><label for="eFire">Fire Incident</label><input id="eFire" type="number" min="0" step="1" value="0"/></div>
+        <div class="field"><label for="eLost">Lost Workdays</label><input id="eLost" type="number" min="0" step="1" value="0"/></div>
+        <div class="field"><label for="eInd">HSE Induction</label><input id="eInd" type="number" min="0" step="1" value="0"/></div>
+        <div class="field"><label for="eMeet">Weekly Safety Meeting</label><input id="eMeet" type="number" min="0" step="1" value="0"/></div>
+        <div class="field"><label for="eInsp">HSE Inspection</label><input id="eInsp" type="number" min="0" step="1" value="0"/></div>
+        <div class="field"><label for="eTalk">Safety Talk</label><input id="eTalk" type="number" min="0" step="1" value="0"/></div>
+        <div class="field"><label for="eClos">Action Closure</label><input id="eClos" type="number" min="0" step="1" value="0"/></div>
+      </div>
+      <div class="entry-actions">
+        <button type="submit" class="primary">Simpan Data Minggu Ini</button>
+        <button type="button" class="secondary" onclick="loadEntry()">Muat Ulang Form</button>
+        <button type="button" class="secondary" onclick="clearEntry()">Kosongkan Form</button>
+        <button type="button" class="danger" onclick="clearAndSaveWeek()">Simpan Minggu Kosong</button>
+      </div>
+      <div id="formStatus" class="status"></div>
+    </form>
+  </section>
+
+  <section id="kpiSection"><div class="section-title" id="kpiSectionTitle">KPI Performance</div><div id="kpiCards" class="kpis"></div></section>
+
+  <section id="chartsSection">
+    <div class="section-title"><span id="chartSectionTitle">Grafik Otomatis</span> <span id="chartSectionHint">(mengikuti tahun, bulan, minggu, dan data manual)</span></div>
+    <div class="charts">
+      <div class="card chart-card"><div class="label" id="chartManHoursTitle">Trend Man Hours per Bulan</div><div id="chartManHours" class="chart-body"></div></div>
+      <div class="card chart-card"><div class="label" id="chartIncidentsTitle">Insiden Lagging per Bulan</div><div id="chartIncidents" class="chart-body"></div></div>
+      <div class="card chart-card"><div class="label" id="chartLeadingTitle">Leading Indicator Activity</div><div id="chartLeading" class="chart-body"></div></div>
+      <div class="card chart-card"><div class="label" id="chartRatesTitle">IR / FR / SR per Bulan</div><div id="chartRates" class="chart-body"></div></div>
+      <div class="card chart-card"><div class="label" id="chartDonutTitle">Distribusi Insiden</div><div id="chartDonut" class="chart-body"></div></div>
+      <div class="card chart-card"><div class="label" id="chartLeadingDonutTitle">Komposisi Leading Indicator</div><div id="chartLeadingDonut" class="chart-body"></div></div>
+    </div>
+  </section>
+
+  <section id="monthlySection"><div class="section-title"><span id="monthlySectionTitle">Tabel Ringkasan Bulanan</span> <span id="monthlySectionHint">(klik baris untuk filter bulan)</span></div><div id="monthlyTable" class="table-wrap"></div></section>
+
+  <section id="weeklySection"><div class="section-title"><span id="weeklySectionTitle">Detail Mingguan</span> <span id="weeklySectionHint">(klik baris untuk mengedit bulan/minggu terkait)</span></div><div id="weeklyTable" class="table-wrap"></div></section>
+
+  <section id="notesSection" class="notes"><div class="section-title" style="margin-top:0" id="notesTitle">Catatan</div><div id="notesBody"></div></section>
+</div>
+
+<div id="settingsOverlay" class="settings-overlay" onclick="toggleSettings(false)"></div>
+<aside id="settingsPanel" class="settings-panel">
+  <div class="settings-head"><h2>Pengaturan Dashboard</h2><button class="secondary small" onclick="toggleSettings(false)">Tutup ✕</button></div>
+  <div class="settings-tabs">
+    <button class="tab-btn active" data-tab="header">Header & Logo</button>
+    <button class="tab-btn" data-tab="texts">Teks Body</button>
+    <button class="tab-btn" data-tab="modules">Modul</button>
+    <button class="tab-btn" data-tab="colors">Warna</button>
+    <button class="tab-btn" data-tab="tools">Tools</button>
+  </div>
+  <div class="settings-body">
+    <div id="tab-header" class="tab-pane active">
+      <div class="setting-block"><h3>Logo Header</h3>
+        <div class="setting-row"><label for="logoFile">Upload Logo (PNG/JPG/WEBP)</label><input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp"/></div>
+        <div class="setting-row inline"><label class="check" style="min-height:auto;padding:8px 10px;"><input type="checkbox" data-setting="showLogo" data-type="bool"/> Tampilkan Logo</label><button class="danger small" id="removeLogo" type="button">Hapus Logo</button></div>
+        <div class="logo-preview"><span class="muted">Preview:</span><img id="logoPreview" alt="Preview Logo"/></div>
+      </div>
+      <div class="setting-block"><h3>Judul Header</h3>
+        <div class="setting-row"><label for="setTitle">Judul Utama</label><input id="setTitle" type="text" data-setting="title"/></div>
+        <div class="setting-row"><label for="setSubtitle">Subtitle</label><textarea id="setSubtitle" data-setting="subtitle"></textarea></div>
+        <div class="setting-row inline"><label class="check" style="min-height:auto;padding:8px 10px;"><input type="checkbox" data-setting="showMainActions" data-type="bool"/> Tampilkan Tombol Aksi Utama</label></div>
+        <div class="setting-row inline"><label class="check" style="min-height:auto;padding:8px 10px;"><input type="checkbox" data-setting="showFloatButton" data-type="bool"/> Tampilkan Tombol Mengambang ⚙</label></div>
+      </div>
+    </div>
+    <div id="tab-texts" class="tab-pane">
+      <div class="setting-block"><h3>Teks Section</h3>
+        <div class="setting-row"><label>Judul Filter</label><input type="text" data-setting="texts.filterTitle"/></div>
+        <div class="setting-row"><label>Judul Input Manual</label><input type="text" data-setting="texts.inputTitle"/></div>
+        <div class="setting-row"><label>Hint Input Manual</label><input type="text" data-setting="texts.inputHint"/></div>
+        <div class="setting-row"><label>Judul KPI</label><input type="text" data-setting="texts.kpiTitle"/></div>
+        <div class="setting-row"><label>Judul Grafik</label><input type="text" data-setting="texts.chartTitle"/></div>
+        <div class="setting-row"><label>Hint Grafik</label><input type="text" data-setting="texts.chartHint"/></div>
+        <div class="setting-row"><label>Judul Tabel Bulanan</label><input type="text" data-setting="texts.monthlyTitle"/></div>
+        <div class="setting-row"><label>Hint Tabel Bulanan</label><input type="text" data-setting="texts.monthlyHint"/></div>
+        <div class="setting-row"><label>Judul Tabel Mingguan</label><input type="text" data-setting="texts.weeklyTitle"/></div>
+        <div class="setting-row"><label>Hint Tabel Mingguan</label><input type="text" data-setting="texts.weeklyHint"/></div>
+        <div class="setting-row"><label>Judul Catatan</label><input type="text" data-setting="texts.notesTitle"/></div>
+        <div class="setting-row"><label>Sumber Info Kanan</label><input type="text" data-setting="texts.sourceInfo"/></div>
+        <div class="setting-row"><label>Isi Catatan (HTML sederhana)</label><textarea rows="7" data-setting="texts.notesHtml"></textarea></div>
+      </div>
+      <div class="setting-block"><h3>Judul Grafik</h3>
+        <div class="setting-row"><label>Man Hours</label><input type="text" data-setting="texts.chartManHours"/></div>
+        <div class="setting-row"><label>Insiden</label><input type="text" data-setting="texts.chartIncidents"/></div>
+        <div class="setting-row"><label>Leading</label><input type="text" data-setting="texts.chartLeading"/></div>
+        <div class="setting-row"><label>Rate</label><input type="text" data-setting="texts.chartRates"/></div>
+        <div class="setting-row"><label>Distribusi Insiden</label><input type="text" data-setting="texts.chartDonut"/></div>
+        <div class="setting-row"><label>Komposisi Leading</label><input type="text" data-setting="texts.chartLeadingDonut"/></div>
+      </div>
+      <div class="setting-block"><h3>Label KPI Card</h3>
+        <div class="setting-row"><label>Man Hours</label><input type="text" data-setting="kpi.manHours"/></div>
+        <div class="setting-row"><label>Jam Kerja Aman</label><input type="text" data-setting="kpi.safeHours"/></div>
+        <div class="setting-row"><label>Fatality & LTI</label><input type="text" data-setting="kpi.fatalityLti"/></div>
+        <div class="setting-row"><label>Total Insiden</label><input type="text" data-setting="kpi.totalInc"/></div>
+        <div class="setting-row"><label>Near Miss / Property Damage</label><input type="text" data-setting="kpi.nmPd"/></div>
+        <div class="setting-row"><label>Incident Rate</label><input type="text" data-setting="kpi.ir"/></div>
+        <div class="setting-row"><label>Frequency / Severity Rate</label><input type="text" data-setting="kpi.frSr"/></div>
+        <div class="setting-row"><label>Leading Indicator</label><input type="text" data-setting="kpi.leading"/></div>
+      </div>
+    </div>
+    <div id="tab-modules" class="tab-pane">
+      <div class="setting-block"><h3>Tampilkan / Sembunyikan Modul</h3>
+        <div class="setting-row inline"><label class="check" style="width:100%;min-height:auto;padding:10px;"><input type="checkbox" data-setting="sections.filters" data-type="bool"/> Section Filter</label></div>
+        <div class="setting-row inline"><label class="check" style="width:100%;min-height:auto;padding:10px;"><input type="checkbox" data-setting="sections.input" data-type="bool"/> Section Input Manual</label></div>
+        <div class="setting-row inline"><label class="check" style="width:100%;min-height:auto;padding:10px;"><input type="checkbox" data-setting="sections.kpi" data-type="bool"/> Section KPI</label></div>
+        <div class="setting-row inline"><label class="check" style="width:100%;min-height:auto;padding:10px;"><input type="checkbox" data-setting="sections.charts" data-type="bool"/> Section Grafik</label></div>
+        <div class="setting-row inline"><label class="check" style="width:100%;min-height:auto;padding:10px;"><input type="checkbox" data-setting="sections.monthly" data-type="bool"/> Section Tabel Bulanan</label></div>
+        <div class="setting-row inline"><label class="check" style="width:100%;min-height:auto;padding:10px;"><input type="checkbox" data-setting="sections.weekly" data-type="bool"/> Section Tabel Mingguan</label></div>
+        <div class="setting-row inline"><label class="check" style="width:100%;min-height:auto;padding:10px;"><input type="checkbox" data-setting="sections.notes" data-type="bool"/> Section Catatan</label></div>
+      </div>
+    </div>
+    <div id="tab-colors" class="tab-pane">
+      <div class="setting-block"><h3>Preset Warna</h3>
+        <div class="preset-buttons">
+          <button class="secondary small" data-preset="default" type="button">Default Cyan</button>
+          <button class="secondary small" data-preset="emerald" type="button">Emerald</button>
+          <button class="secondary small" data-preset="violet" type="button">Violet</button>
+          <button class="secondary small" data-preset="corporate" type="button">Corporate Blue</button>
+        </div>
+      </div>
+      <div class="setting-block"><h3>Warna Custom</h3>
+        <div class="setting-row inline"><label>Accent</label><input type="color" data-setting="colors.accent" data-type="color"/></div>
+        <div class="setting-row inline"><label>Accent 2</label><input type="color" data-setting="colors.accent2" data-type="color"/></div>
+        <div class="setting-row inline"><label>Background</label><input type="color" data-setting="colors.bg" data-type="color"/></div>
+        <div class="setting-row inline"><label>Card</label><input type="color" data-setting="colors.card" data-type="color"/></div>
+        <div class="setting-row inline"><label>Text</label><input type="color" data-setting="colors.text" data-type="color"/></div>
+        <div class="setting-row inline"><label>Muted</label><input type="color" data-setting="colors.muted" data-type="color"/></div>
+        <div class="setting-row inline"><label>Line</label><input type="color" data-setting="colors.line" data-type="color"/></div>
+        <div class="setting-row inline"><label>Good</label><input type="color" data-setting="colors.good" data-type="color"/></div>
+        <div class="setting-row inline"><label>Warning</label><input type="color" data-setting="colors.warn" data-type="color"/></div>
+        <div class="setting-row inline"><label>Bad</label><input type="color" data-setting="colors.bad" data-type="color"/></div>
+      </div>
+    </div>
+    <div id="tab-tools" class="tab-pane">
+      <div class="setting-block"><h3>Tools</h3>
+        <div class="setting-row"><button class="danger" type="button" onclick="resetSettings()">Reset Pengaturan ke Default</button></div>
+        <div class="setting-row"><button class="secondary" type="button" onclick="exportSettingsJson()">Export Pengaturan JSON</button></div>
+        <div class="setting-row"><button class="secondary" type="button" onclick="document.getElementById('importSettingsFile').click()">Import Pengaturan JSON</button><input id="importSettingsFile" type="file" accept=".json,application/json" hidden/></div>
+        <p class="muted" style="font-size:11px;line-height:1.5;">Pengaturan & logo disimpan otomatis di browser. Gunakan export/import pengaturan JSON untuk memindahkan tema ke komputer lain.</p>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<script>
+'use strict';
+const DATA_KEY='HSE_EKU_DATA_EDITABLE_FINAL_V1';
+const SET_KEY='HSE_EKU_SET_EDITABLE_FINAL_V1';
+const START_YEAR=2026, END_YEAR=2040, BASE_SAFE=1472534;
+const MONTH_DEFS=[{key:'Jan',name:'Januari'},{key:'Feb',name:'Februari'},{key:'Mar',name:'Maret'},{key:'Apr',name:'April'},{key:'Mei',name:'Mei'},{key:'Jun',name:'Juni'},{key:'Jul',name:'Juli'},{key:'Agu',name:'Agustus'},{key:'Sep',name:'September'},{key:'Okt',name:'Oktober'},{key:'Nov',name:'November'},{key:'Des',name:'Desember'}];
+const MN={};MONTH_DEFS.forEach(m=>MN[m.key]=m.name);
+const YEARS=[];for(let y=START_YEAR;y<=END_YEAR;y++)YEARS.push(y);
+
+function $(id){return document.getElementById(id);}
+function num(v){const n=Number(v);return Number.isFinite(n)?n:0;}
+function fmt(n){return new Intl.NumberFormat('id-ID').format(Math.round(num(n)));}
+function fmtRate(n){return num(n).toLocaleString('id-ID',{maximumFractionDigits:3});}
+function fmtPct(n){return num(n).toLocaleString('id-ID',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';}
+function fmtC(n){n=num(n);if(Math.abs(n)>=1e6)return (n/1e6).toFixed(1)+'M';if(Math.abs(n)>=1e3)return (n/1e3).toFixed(0)+'k';return String(Math.round(n));}
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function escX(s){return esc(s);}
+function ts(){return new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');}
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);}
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function setStatus(m){const e=$('formStatus');if(e)e.textContent=m;}
+function showError(e){const el=$('initError');if(el){el.style.display='block';el.textContent='Error: '+(e&&e.message?e.message:String(e));}console.error(e);}
+function safeHtml(h){return String(h||'').replace(/<script[\s\S]*?<\/script>/gi,'').replace(/on\w+="[^"]*"/gi,'').replace(/on\w+='[^']*'/gi,'');}
+function rgba(hex,a){hex=String(hex||'#000').replace('#','');if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');const r=parseInt(hex.slice(0,2),16)||0,g=parseInt(hex.slice(2,4),16)||0,b=parseInt(hex.slice(4,6),16)||0;return `rgba(${r},${g},${b},${a})`;}
+function gp(o,p){return String(p).split('.').reduce((a,k)=>(a&&a[k]!==undefined?a[k]:undefined),o);}
+function sp(o,p,v){const k=String(p).split('.');let c=o;for(let i=0;i<k.length-1;i++){if(c[k[i]]==null)c[k[i]]={};c=c[k[i]];}c[k[k.length-1]]=v;}
+function merge(t,s){const o=clone(s);Object.keys(t||{}).forEach(k=>{if(t[k]&&typeof t[k]==='object'&&!Array.isArray(t[k]))o[k]=merge(t[k],o[k]||{});else o[k]=t[k];});return o;}
+
+const DEF_SET={title:'HSE Performance Dashboard — EKU 2026-2040',subtitle:'Offline 1 file HTML — versi EDITABLE (header, logo, teks, modul, warna bisa diatur)',logo:'',showLogo:true,showMainActions:true,showFloatButton:true,
+sections:{filters:true,input:true,kpi:true,charts:true,monthly:true,weekly:true,notes:true},
+texts:{filterTitle:'Filter Dashboard',inputTitle:'Input Data Manual',inputHint:'(pilih tahun, bulan, minggu, lalu simpan)',kpiTitle:'KPI Performance',chartTitle:'Grafik Otomatis',chartHint:'(mengikuti tahun, bulan, minggu, dan data manual)',monthlyTitle:'Tabel Ringkasan Bulanan',monthlyHint:'(klik baris untuk filter bulan)',weeklyTitle:'Detail Mingguan',weeklyHint:'(klik baris untuk mengedit bulan/minggu terkait)',notesTitle:'Catatan',sourceInfo:'Sumber data: Excel EKU 2026 + Desember & tahun 2027-2040 siap input manual',chartManHours:'Trend Man Hours per Bulan',chartIncidents:'Insiden Lagging per Bulan',chartLeading:'Leading Indicator Activity',chartRates:'IR / FR / SR per Bulan',chartDonut:'Distribusi Insiden',chartLeadingDonut:'Komposisi Leading Indicator',notesHtml:'<strong>Cara pakai:</strong><ul><li>Klik <b>⚙ Pengaturan</b> (header) atau tombol mengambang ⚙ kanan‑bawah.</li><li>Ubah judul/logo/teks/modul/warna — tersimpan otomatis.</li><li>Isi data manual per tahun/bulan/minggu lalu <b>Simpan Data Minggu Ini</b>; dashboard & grafik langsung berubah.</li><li>Export JSON = backup data; Tools → Export Pengaturan = backup tema/logo.</li><li>Unduh Excel menghasilkan sheet Dashboard yang meniru bentuk dashboard.</li></ul>'},
+kpi:{manHours:'Total Man Hours',safeHours:'Jam Kerja Aman Kumulatif',fatalityLti:'Fatality & LTI',totalInc:'Total Insiden',nmPd:'Near Miss / Property Damage',ir:'Incident Rate',frSr:'Frequency / Severity Rate',leading:'Aktivitas Leading Indicator'},
+colors:{accent:'#22d3ee',accent2:'#38bdf8',bg:'#0f1724',bg2:'#111a2b',card:'#182338',text:'#e6edf7',muted:'#9aa9c0',line:'#2b3a55',good:'#22c55e',warn:'#f59e0b',bad:'#ef4444',purple:'#a78bfa',pink:'#f472b6',lime:'#a3e635'}};
+
+const PRESETS={default:{accent:'#22d3ee',accent2:'#38bdf8',bg:'#0f1724',bg2:'#111a2b',card:'#182338',text:'#e6edf7',muted:'#9aa9c0',line:'#2b3a55',good:'#22c55e',warn:'#f59e0b',bad:'#ef4444',purple:'#a78bfa',pink:'#f472b6',lime:'#a3e635'},
+emerald:{accent:'#34d399',accent2:'#10b981',bg:'#052e16',bg2:'#064e3b',card:'#065f46',text:'#ecfdf5',muted:'#a7f3d0',line:'#047857',good:'#22c55e',warn:'#f59e0b',bad:'#ef4444',purple:'#86efac',pink:'#6ee7b7',lime:'#bef264'},
+violet:{accent:'#a78bfa',accent2:'#8b5cf6',bg:'#1e1b4b',bg2:'#312e81',card:'#3730a3',text:'#ede9fe',muted:'#c4b5fd',line:'#4c1d95',good:'#34d399',warn:'#fbbf24',bad:'#fb7185',purple:'#c084fc',pink:'#f472b6',lime:'#a3e635'},
+corporate:{accent:'#60a5fa',accent2:'#2563eb',bg:'#0f172a',bg2:'#1e293b',card:'#1e3a8a',text:'#e2e8f0',muted:'#94a3b8',line:'#334155',good:'#22c55e',warn:'#f59e0b',bad:'#ef4444',purple:'#818cf8',pink:'#f472b6',lime:'#a3e635'}};
+
+function loadSet(){try{const r=localStorage.getItem(SET_KEY);return r?merge(JSON.parse(r),DEF_SET):clone(DEF_SET);}catch(e){return clone(DEF_SET);}}
+function saveSet(){try{localStorage.setItem(SET_KEY,JSON.stringify(SET));return true;}catch(e){alert('Gagal simpan pengaturan (storage penuh?): '+e.message);return false;}}
+let SET=loadSet();
+
+function W(w,mp,mh,nm,pd,cr,cb,ft,fire,lost,ind,meet,insp,talk,clos){return{w:num(w),mp:num(mp),mh:num(mh),nm:num(nm),pd:num(pd),cr:num(cr),cb:num(cb),ft:num(ft),fire:num(fire),lostDays:num(lost),ind:num(ind),meet:num(meet),insp:num(insp),talk:num(talk),clos:num(clos)};}
+const RAW26=[['Jan',[[1,131,8253,0,0,0,0,0,0,0,5,0,0,0,0],[2,131,8253,0,0,0,0,0,0,0,9,1,3,1,4],[3,131,8253,0,0,0,0,0,0,0,19,1,1,1,1],[4,131,8253,0,0,0,0,0,0,0,6,0,1,1,7],[5,131,8253,0,0,0,0,0,0,0,0,1,2,1,8]]],
+['Feb',[[1,131,8253,0,0,0,0,0,0,0,2,1,3,1,0],[2,131,8253,0,0,0,0,0,0,0,9,1,3,1,2],[3,132,8316,0,0,0,0,0,0,0,0,1,2,1,3],[4,133,8379,0,0,0,0,0,0,0,8,0,1,1,4],[5,0,0]]],
+['Mar',[[1,133,8379,0,0,0,0,0,0,0,16,1,3,1,3],[2,133,8379,0,2,0,0,0,0,0,29,1,3,1,5],[3,133,8379,0,0,0,0,0,0,0,0,0,0,0,0],[4,133,8379,1,0,0,0,0,0,0,6,0,2,0,2],[5,0,0]]],
+['Apr',[[1,131,8253,0,0,0,0,0,0,0,0,0,2,1,5],[2,131,8253,0,2,0,0,0,0,0,14,1,5,1,1],[3,131,8253,0,0,0,0,0,0,0,8,1,1,1,0],[4,131,8253,1,1,0,0,0,0,0,15,0,1,1,2],[5,128,8064,0,0,0,0,0,0,0,3,0,2,1,2]]],
+['Mei',[[1,128,8064,0,0,0,0,0,0,0,8,1,3,0,0],[2,128,8064,0,0,0,0,0,0,0,13,1,1,1,4],[3,128,8064,1,0,0,0,0,0,0,3,0,3,1,2],[4,128,8064,0,0,0,0,0,0,0,2,0,1,0,0],[5,0,0]]],
+['Jun',[[1,124,7812,0,0,0,0,0,0,0,6,1,1,0,0],[2,124,7812,0,0,0,0,0,0,0,9,0,1,0,1],[3,128,8064,0,0,0,0,0,0,0,20,0,1,0,5],[4,128,8064,0,0,0,0,0,0,0,1,0,4,1,6],[5,0,0]]],
+['Jul',[[1,115,7245,0,0,0,0,0,0,0,9,1,1,1,3],[2,115,7245,0,0,0,0,0,0,0,10,1,3,1,5],[3,115,7245,0,0,0,0,0,0,0,2,1,2,0,0],[4,116,7308,0,0,0,0,0,0,0,1,0,1,0,1],[5,116,7308,0,0,0,0,0,0,0,11,0,0,0,0]]],
+['Agu',[[1,116,7308,0,0,0,0,0,0,0,10,0,2,0,1],[2,109,6867,0,0,0,0,0,0,0,0,0,2,1,0],[3,109,6867,0,0,0,0,0,0,0,4,0,1,1,0],[4,109,6867,0,0,0,0,0,0,0,3,1,3,1,1],[5,0,0]]],
+['Sep',[[1,110,6930,0,0,0,0,0,0,0,6,1,3,1,1],[2,110,6930,0,0,0,0,0,0,0,17,1,2,1,2],[3,110,6930,0,0,0,0,0,0,0,8,0,2,1,2],[4,115,7245,0,0,0,0,0,0,0,13,1,3,1,0],[5,0,0]]],
+['Okt',[[1,116,7308,0,0,0,0,0,0,0,3,1,3,1,0],[2,116,7308,0,0,0,0,0,0,0,4,1,3,1,4],[3,116,7308,0,0,0,0,0,0,0,7,1,3,1,0],[4,116,7308,0,0,0,0,0,0,0,3,1,1,1,0],[5,0,0]]],
+['Nov',[[1,116,7308,0,0,0,0,0,0,0,6,1,2,1,0],[2,112,7056,0,0,0,0,0,0,0,5,1,1,1,0],[3,114,7182,0,0,0,0,0,0,0,0,1,3,1,0],[4,0,0],[5,0,0]]],
+['Des',[[1,0,0],[2,0,0],[3,0,0],[4,0,0],[5,0,0]]]];
+const DEF26=RAW26.map(it=>({key:it[0],weeks:it[1].map(r=>W.apply(null,r))}));
+
+function emptyMonths(y){return MONTH_DEFS.map(m=>({key:m.key,name:m.name+' '+y,weeks:[1,2,3,4,5].map(w=>W(w,0,0))}));}
+function defYear(y){if(y===START_YEAR)return DEF26.map(m=>({key:m.key,name:MN[m.key]+' '+y,weeks:clone(m.weeks)}));return emptyMonths(y);}
+function freshDB(){const yrs={};YEARS.forEach(y=>yrs[y]=defYear(y));return{activeYear:START_YEAR,years:yrs};}
+function normW(s,b){const o=Object.assign({},b);['mp','mh','nm','pd','cr','cb','ft','fire','lostDays','ind','meet','insp','talk','clos'].forEach(k=>o[k]=num(s&&s[k]));o.w=b.w;return o;}
+function normM(lm,y){const base=emptyMonths(y);if(!Array.isArray(lm))return base;return base.map(bm=>{const src=lm.find(x=>x&&x.key===bm.key)||{};return{key:bm.key,name:src.name||bm.name,weeks:bm.weeks.map(bw=>normW(Array.isArray(src.weeks)?src.weeks.find(x=>x&&num(x.w)===bw.w):null,bw))};});}
+function normLoad(l){const db=freshDB();if(l&&l.years){YEARS.forEach(y=>db.years[y]=normM(l.years[y],y));db.activeYear=num(l.activeYear)||START_YEAR;if(!db.years[db.activeYear])db.activeYear=START_YEAR;}else if(Array.isArray(l)){db.years[START_YEAR]=normM(l,START_YEAR);db.activeYear=START_YEAR;}return db;}
+function loadData(){try{const r=localStorage.getItem(DATA_KEY);return r?normLoad(JSON.parse(r)):null;}catch(e){return null;}}
+function saveLocal(){try{DB.activeYear=state.year;localStorage.setItem(DATA_KEY,JSON.stringify(DB));return true;}catch(e){setStatus('Gagal simpan data: '+e.message);return false;}}
+function saveNow(){if(saveLocal())setStatus('Data tersimpan manual ke browser.');}
+
+let DB=freshDB();
+const state={year:START_YEAR,month:'all',week:'all',search:'',showZero:false,editYear:START_YEAR,editMonth:'Jan',editWeek:1};
+
+function ym(y){y=num(y)||START_YEAR;if(!DB.years[y])DB.years[y]=defYear(y);return DB.years[y];}
+function cumAll(){let acc=BASE_SAFE;YEARS.forEach(y=>{const a=ym(y);a.startSafe=acc;let ma=acc;a.forEach(m=>{m.startSafe=ma;const mh=m.weeks.reduce((s,b)=>s+num(b.mh),0);m.endSafe=ma+mh;ma=m.endSafe;});a.endSafe=ma;acc=ma;});}
+function flat(y){y=num(y)||state.year;const arr=[];ym(y).forEach(m=>m.weeks.forEach(w=>arr.push(Object.assign({},w,{year:y,monthKey:m.key,monthName:m.name}))));return arr;}
+function act(w){return['mp','mh','nm','pd','cr','cb','ft','fire','lostDays','ind','meet','insp','talk','clos'].some(k=>num(w[k])!==0);}
+function rates(o){const mp=num(o.mp),mh=num(o.mh),tot=num(o.nm)+num(o.pd)+num(o.cr)+num(o.cb)+num(o.ft)+num(o.fire),inj=num(o.cr)+num(o.cb)+num(o.ft),lo=num(o.lostDays);return{total:tot,injuries:inj,lost:lo,irPct:mp?tot/mp*100:0,frPct:mp?inj/mp*100:0,srPct:mp?lo/mp*100:0,ir200:mh?tot/mh*2e5:0,fr200:mh?inj/mh*2e5:0,sr200:mh?lo/mh*2e5:0};}
+function sumM(m){const ws=m.weeks,av=ws.filter(act),S=k=>ws.reduce((a,b)=>a+num(b[k]),0),mp=av.length?Math.round(av.reduce((a,b)=>a+num(b.mp),0)/av.length):0;const o={key:m.key,name:m.name,weekCount:ws.length,activeWeeks:av.length,manpower:mp,manHours:S('mh'),nm:S('nm'),pd:S('pd'),cr:S('cr'),cb:S('cb'),ft:S('ft'),fire:S('fire'),lostDays:S('lostDays'),induction:S('ind'),meeting:S('meet'),inspection:S('insp'),talk:S('talk'),closure:S('clos'),startSafe:num(m.startSafe),endSafe:num(m.endSafe)};const r=rates({mp:mp,mh:o.manHours,nm:o.nm,pd:o.pd,cr:o.cr,cb:o.cb,ft:o.ft,fire:o.fire,lostDays:o.lostDays});o.totalInc=r.total;o.irPct=r.irPct;o.frPct=r.frPct;o.srPct=r.srPct;o.ir200=r.ir200;o.fr200=r.fr200;o.sr200=r.sr200;o.leading=o.induction+o.meeting+o.inspection+o.talk+o.closure;o.lti=o.ft+o.cb;return o;}
+function dispM(){const all=ym(state.year).map(sumM);let res=all.filter(m=>state.month==='all'||m.key===state.month);const t=state.search.trim().toLowerCase();if(t){const s=res.filter(m=>String(m.name).toLowerCase().includes(t)||String(m.key).toLowerCase().includes(t));if(s.length)res=s;}if(!state.showZero){const nz=res.filter(m=>m.activeWeeks||m.manHours||m.totalInc||m.leading);if(nz.length)res=nz;}return res;}
+function filtW(){const all=flat(state.year);let res=all.filter(w=>state.month==='all'||w.monthKey===state.month);if(state.week!=='all')res=res.filter(w=>w.w===num(state.week));const t=state.search.trim().toLowerCase();if(t){const s=res.filter(w=>String(w.monthName).toLowerCase().includes(t)||String(w.monthKey).toLowerCase().includes(t));if(s.length)res=s;}if(!state.showZero){const nz=res.filter(act);if(nz.length)res=nz;}return res;}
+function safeH(){const y=ym(state.year);if(state.month==='all')return num(y.endSafe);const m=y.find(x=>x.key===state.month);if(!m)return num(y.endSafe);if(state.week==='all')return num(m.endSafe);const w=num(state.week);return num(m.startSafe)+m.weeks.filter(x=>x.w<=w).reduce((a,b)=>a+num(b.mh),0);}
+function kpiOf(ws){const S=k=>ws.reduce((a,b)=>a+num(b[k]),0),av=ws.filter(act),mp=av.length?av.reduce((a,b)=>a+num(b.mp),0)/av.length:0;const o={mh:S('mh'),nm:S('nm'),pd:S('pd'),cr:S('cr'),cb:S('cb'),ft:S('ft'),fire:S('fire'),lostDays:S('lostDays'),induction:S('ind'),meeting:S('meet'),inspection:S('insp'),talk:S('talk'),closure:S('clos')};const r=rates({mp:mp,mh:o.mh,nm:o.nm,pd:o.pd,cr:o.cr,cb:o.cb,ft:o.ft,fire:o.fire,lostDays:o.lostDays});return Object.assign({},o,{safeHours:safeH(),totalInc:r.total,irPct:r.irPct,frPct:r.frPct,srPct:r.srPct,ir200:r.ir200,fr200:r.fr200,sr200:r.sr200,lti:o.ft+o.cb,leading:o.induction+o.meeting+o.inspection+o.talk+o.closure,activeWeeks:av.length});}
+
+function renderKpi(k){const L=SET.kpi,ib=k.totalInc===0?'<span class="badge zero">Zero Incident</span>':`<span class="badge issue">${fmt(k.totalInc)} insiden</span>`,fb=k.ft===0?'<span class="badge zero">0 Fatality</span>':'<span class="badge issue">Ada Fatality</span>',lb=k.lti===0?'<span class="badge zero">0 LTI</span>':`<span class="badge issue">${fmt(k.lti)} LTI</span>`;
+$('kpiCards').innerHTML=`
+<div class="card"><div class="label">${esc(L.manHours)}</div><div class="value">${fmt(k.mh)}</div><div class="sub">jam kerja sesuai filter tahun ${state.year}</div></div>
+<div class="card"><div class="label">${esc(L.safeHours)}</div><div class="value">${fmt(k.safeHours)}</div><div class="sub">berjalan tanpa fatality / LTI</div></div>
+<div class="card"><div class="label">${esc(L.fatalityLti)}</div><div class="value">${fb} ${lb}</div><div class="sub">LTI = Fatality + Cidera Berat</div></div>
+<div class="card"><div class="label">${esc(L.totalInc)}</div><div class="value">${fmt(k.totalInc)}</div><div class="sub">${ib}</div></div>
+<div class="card"><div class="label">${esc(L.nmPd)}</div><div class="value">${fmt(k.nm)} / ${fmt(k.pd)}</div><div class="sub">Fire ${fmt(k.fire)}, CR ${fmt(k.cr)}, CB ${fmt(k.cb)}</div></div>
+<div class="card"><div class="label">${esc(L.ir)}</div><div class="value">${fmtPct(k.irPct)}</div><div class="sub">IR/200k jam: ${fmtRate(k.ir200)}</div></div>
+<div class="card"><div class="label">${esc(L.frSr)}</div><div class="value">${fmtPct(k.frPct)} / ${fmtPct(k.srPct)}</div><div class="sub">FR/200k ${fmtRate(k.fr200)}, SR/200k ${fmtRate(k.sr200)}</div></div>
+<div class="card"><div class="label">${esc(L.leading)}</div><div class="value">${fmt(k.leading)}</div><div class="sub">Ind ${fmt(k.induction)}, Meet ${fmt(k.meeting)}, Insp ${fmt(k.inspection)}, Talk ${fmt(k.talk)}, Clos ${fmt(k.closure)}</div></div>`;}
+
+function svg(c,w=900,h=300){return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" class="svgchart">${c}</svg>`;}
+function grid(w,h,L,R,T,B,max){const cw=w-L-R,ch=h-T-B;let s='';for(let i=0;i<=4;i++){const y=T+ch-ch*i/4;s+=`<line x1="${L}" y1="${y}" x2="${w-R}" y2="${y}" class="grid"/><text x="${L-8}" y="${y+4}" text-anchor="end">${fmtC(max*i/4)}</text>`;}s+=`<line x1="${L}" y1="${T+ch}" x2="${w-R}" y2="${T+ch}" class="axis-line"/><line x1="${L}" y1="${T}" x2="${L}" y2="${T+ch}" class="axis-line"/>`;return s;}
+function bar(labels,vals,col){if(!labels.length)return svg('<text x="450" y="150" text-anchor="middle" class="chart-val">Tidak ada data</text>');const w=900,h=300,L=70,R=20,T=28,B=55,cw=w-L-R,ch=h-T-B,max=Math.max(1,...vals.map(num)),step=cw/labels.length,bw=Math.min(58,step*.68);let c=grid(w,h,L,R,T,B,max);labels.forEach((lb,i)=>{const v=num(vals[i]),bh=v/max*ch,x=L+i*step+(step-bw)/2,y=T+ch-bh;c+=`<rect x="${x}" y="${y}" width="${bw}" height="${Math.max(0,bh)}" fill="${col}" rx="5"><title>${esc(lb)}: ${fmt(v)}</title></rect><text x="${x+bw/2}" y="${y-6}" text-anchor="middle" class="chart-val">${fmtC(v)}</text><text x="${x+bw/2}" y="${h-20}" text-anchor="middle">${esc(lb)}</text>`;});return svg(c,w,h);}
+function leg(sr){return `<div class="legend">${sr.map(s=>`<span class="legend-item"><i style="background:${s.color}"></i>${esc(s.name)}</span>`).join('')}</div>`;}
+function stack(labels,sr){if(!labels.length)return{legend:'',svg:svg('<text x="450" y="150" text-anchor="middle" class="chart-val">Tidak ada data</text>')};const w=900,h=300,L=70,R=20,T=28,B=55,cw=w-L-R,ch=h-T-B,sums=labels.map((_,i)=>sr.reduce((a,s)=>a+num(s.data[i]),0)),max=Math.max(1,...sums),step=cw/labels.length,bw=Math.min(58,step*.68);let c=grid(w,h,L,R,T,B,max);labels.forEach((lb,i)=>{let yc=T+ch;const x=L+i*step+(step-bw)/2;sr.forEach(se=>{const v=num(se.data[i]);if(!v)return;const sh=v/max*ch,y=yc-sh;c+=`<rect x="${x}" y="${y}" width="${bw}" height="${Math.max(0,sh)}" fill="${se.color}" opacity=".92"><title>${esc(lb)} • ${esc(se.name)}: ${fmt(v)}</title></rect>`;yc=y;});c+=`<text x="${x+bw/2}" y="${h-20}" text-anchor="middle">${esc(lb)}</text><text x="${x+bw/2}" y="${yc-6}" text-anchor="middle" class="chart-val">${fmtC(sums[i])}</text>`;});return{legend:leg(sr),svg:svg(c,w,h)};}
+function line(labels,sr){if(!labels.length)return{legend:'',svg:svg('<text x="450" y="150" text-anchor="middle" class="chart-val">Tidak ada data</text>')};const w=900,h=300,L=70,R=20,T=28,B=55,cw=w-L-R,ch=h-T-B,all=sr.flatMap(s=>s.data.map(num)),max=Math.max(1,...all),step=cw/Math.max(1,labels.length-1);let c=grid(w,h,L,R,T,B,max);labels.forEach((lb,i)=>{const x=labels.length===1?L+cw/2:L+i*step;c+=`<text x="${x}" y="${h-20}" text-anchor="middle">${esc(lb)}</text>`;});sr.forEach(se=>{const pts=se.data.map((v,i)=>{const x=labels.length===1?L+cw/2:L+i*step;return{x,y:T+ch-num(v)/max*ch,v:num(v)};});if(pts.length>1)c+=`<polyline fill="none" stroke="${se.color}" stroke-width="3" points="${pts.map(p=>`${p.x},${p.y}`).join(' ')}"/>`;pts.forEach(p=>c+=`<circle cx="${p.x}" cy="${p.y}" r="4" fill="${se.color}"><title>${esc(se.name)}: ${fmtRate(p.v)}</title></circle>`);});return{legend:leg(sr),svg:svg(c,w,h)};}
+function pol(cx,cy,r,a){const rad=(a-90)*Math.PI/180;return{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};}
+function arc(cx,cy,ro,ri,s,e){const os=pol(cx,cy,ro,e),oe=pol(cx,cy,ro,s),is=pol(cx,cy,ri,e),ie=pol(cx,cy,ri,s),lg=e-s<=180?0:1;return['M',os.x,os.y,'A',ro,ro,0,lg,0,oe.x,oe.y,'L',ie.x,ie.y,'A',ri,ri,0,lg,1,is.x,is.y,'Z'].join(' ');}
+function donut(labels,vals,cols){const w=900,h=300,cx=200,cy=150,ro=105,ri=64,tot=vals.reduce((a,b)=>a+num(b),0);let c='',li=[];if(tot===0){c+=`<circle cx="${cx}" cy="${cy}" r="${(ro+ri)/2}" fill="none" stroke="#475569" stroke-width="${ro-ri}"/><text x="${cx}" y="${cy+5}" text-anchor="middle" class="chart-val">Tidak ada data</text>`;li=labels.map((l,i)=>`<span class="legend-item"><i style="background:${cols[i]}"></i>${esc(l)}: 0</span>`);return{legend:`<div class="legend">${li.join('')}</div>`,svg:svg(c,w,h)};}let st=0;vals.forEach((v,i)=>{const val=num(v),pc=val/tot*100;li.push(`<span class="legend-item"><i style="background:${cols[i]}"></i>${esc(labels[i])}: ${fmt(val)} (${pc.toFixed(1)}%)</span>`);if(!val)return;const en=st+val/tot*360;if(val/tot>.9999)c+=`<circle cx="${cx}" cy="${cy}" r="${(ro+ri)/2}" fill="none" stroke="${cols[i]}" stroke-width="${ro-ri}"><title>${esc(labels[i])}: ${fmt(val)}</title></circle>`;else c+=`<path d="${arc(cx,cy,ro,ri,st,en)}" fill="${cols[i]}"><title>${esc(labels[i])}: ${fmt(val)}</title></path>`;st=en;});c+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" class="chart-val" style="font-size:16px;">${fmt(tot)}</text><text x="${cx}" y="${cy+16}" text-anchor="middle" style="font-size:11px;fill:#9aa9c0;">TOTAL</text>`;let dx=380;labels.forEach((l,i)=>{const val=num(vals[i]),pc=val/tot*100;c+=`<rect x="${dx}" y="${40+i*30}" width="12" height="12" fill="${cols[i]}" rx="3"/><text x="${dx+20}" y="${50+i*30}">${esc(l)}: ${fmt(val)} (${pc.toFixed(1)}%)</text>`;});return{legend:`<div class="legend">${li.join('')}</div>`,svg:svg(c,w,h)};}
+
+function renderCharts(ms){const lb=ms.map(m=>m.key),C=SET.colors;$('chartManHours').innerHTML=bar(lb,ms.map(m=>m.manHours),C.accent);
+const ic=stack(lb,[{name:'Near Miss',color:C.pink,data:ms.map(m=>m.nm)},{name:'Property Damage',color:C.warn,data:ms.map(m=>m.pd)},{name:'Cidera Ringan',color:C.lime,data:ms.map(m=>m.cr)},{name:'Cidera Berat',color:C.bad,data:ms.map(m=>m.cb)},{name:'Fatality',color:'#991b1b',data:ms.map(m=>m.ft)},{name:'Fire',color:'#fb7185',data:ms.map(m=>m.fire)}]);$('chartIncidents').innerHTML=ic.legend+ic.svg;
+const ld=line(lb,[{name:'HSE Induction',color:C.accent,data:ms.map(m=>m.induction)},{name:'Safety Meeting',color:C.purple,data:ms.map(m=>m.meeting)},{name:'HSE Inspection',color:C.good,data:ms.map(m=>m.inspection)},{name:'Safety Talk',color:C.warn,data:ms.map(m=>m.talk)},{name:'Action Closure',color:C.pink,data:ms.map(m=>m.closure)}]);$('chartLeading').innerHTML=ld.legend+ld.svg;
+const rt=line(lb,[{name:'IR %',color:C.warn,data:ms.map(m=>m.irPct)},{name:'FR %',color:C.accent,data:ms.map(m=>m.frPct)},{name:'SR %',color:C.purple,data:ms.map(m=>m.srPct)}]);$('chartRates').innerHTML=rt.legend+rt.svg;
+const td=ms.reduce((a,m)=>({nm:a.nm+m.nm,pd:a.pd+m.pd,cr:a.cr+m.cr,cb:a.cb+m.cb,ft:a.ft+m.ft,fire:a.fire+m.fire}),{nm:0,pd:0,cr:0,cb:0,ft:0,fire:0});const dn=donut(['Near Miss','Property Damage','Cidera Ringan','Cidera Berat','Fatality','Fire'],[td.nm,td.pd,td.cr,td.cb,td.ft,td.fire],[C.pink,C.warn,C.lime,C.bad,'#991b1b','#fb7185']);$('chartDonut').innerHTML=dn.legend+dn.svg;
+const lt=ms.reduce((a,m)=>({ind:a.ind+m.induction,meet:a.meet+m.meeting,insp:a.insp+m.inspection,talk:a.talk+m.talk,clos:a.clos+m.closure}),{ind:0,meet:0,insp:0,talk:0,clos:0});const ldn=donut(['HSE Induction','Safety Meeting','HSE Inspection','Safety Talk','Action Closure'],[lt.ind,lt.meet,lt.insp,lt.talk,lt.clos],[C.accent,C.purple,C.good,C.warn,C.pink]);$('chartLeadingDonut').innerHTML=ldn.legend+ldn.svg;}
+
+function renderMon(ms){if(!ms.length){$('monthlyTable').innerHTML='<div style="padding:18px;color:var(--muted);">Tidak ada data bulan yang cocok.</div>';return;}
+$('monthlyTable').innerHTML=`<table><thead><tr><th>Bulan</th><th class="num">Aktif</th><th class="num">MP Avg</th><th class="num">Man Hours</th><th class="num">NM</th><th class="num">PD</th><th class="num">CR</th><th class="num">CB</th><th class="num">FT</th><th class="num">Fire</th><th class="num">Lost Day</th><th class="num">Total</th><th class="num">IR %</th><th class="num">IR/200k</th><th class="num">FR %</th><th class="num">SR %</th><th class="num">Induction</th><th class="num">Meeting</th><th class="num">Inspection</th><th class="num">Talk</th><th class="num">Closure</th><th class="num">End Safe</th></tr></thead><tbody>${ms.map(m=>`<tr class="clickable" data-month="${m.key}"><td><strong>${esc(m.name)}</strong></td><td class="num">${fmt(m.activeWeeks)}</td><td class="num">${fmt(m.manpower)}</td><td class="num">${fmt(m.manHours)}</td><td class="num ${m.nm?'warn':'good'}">${fmt(m.nm)}</td><td class="num ${m.pd?'warn':'good'}">${fmt(m.pd)}</td><td class="num ${m.cr?'bad':'good'}">${fmt(m.cr)}</td><td class="num ${m.cb?'bad':'good'}">${fmt(m.cb)}</td><td class="num ${m.ft?'bad':'good'}">${fmt(m.ft)}</td><td class="num ${m.fire?'warn':'good'}">${fmt(m.fire)}</td><td class="num">${fmt(m.lostDays)}</td><td class="num ${m.totalInc?'bad':'good'}">${fmt(m.totalInc)}</td><td class="num">${fmtPct(m.irPct)}</td><td class="num">${fmtRate(m.ir200)}</td><td class="num">${fmtPct(m.frPct)}</td><td class="num">${fmtPct(m.srPct)}</td><td class="num">${fmt(m.induction)}</td><td class="num">${fmt(m.meeting)}</td><td class="num">${fmt(m.inspection)}</td><td class="num">${fmt(m.talk)}</td><td class="num">${fmt(m.closure)}</td><td class="num">${fmt(m.endSafe)}</td></tr>`).join('')}</tbody></table>`;
+document.querySelectorAll('#monthlyTable tr[data-month]').forEach(tr=>tr.onclick=()=>{state.month=tr.dataset.month;state.week='all';state.editYear=state.year;state.editMonth=state.month;state.editWeek=1;$('monthFilter').value=state.month;$('weekFilter').value='all';loadEntry();renderAll();window.scrollTo({top:0,behavior:'smooth'});});}
+
+function renderWeek(ws){if(!ws.length){$('weeklyTable').innerHTML='<div style="padding:18px;color:var(--muted);">Tidak ada data minggu yang cocok.</div>';return;}
+$('weeklyTable').innerHTML=`<table><thead><tr><th>Bulan</th><th class="center">Week</th><th class="num">MP</th><th class="num">MH</th><th class="num">NM</th><th class="num">PD</th><th class="num">CR</th><th class="num">CB</th><th class="num">FT</th><th class="num">Fire</th><th class="num">Lost Day</th><th class="num">IR %</th><th class="num">IR/200k</th><th class="num">FR %</th><th class="num">SR %</th><th class="num">Induction</th><th class="num">Meeting</th><th class="num">Inspection</th><th class="num">Talk</th><th class="num">Closure</th></tr></thead><tbody>${ws.map(w=>{const r=rates(w);return `<tr class="clickable" data-month="${w.monthKey}" data-week="${w.w}"><td>${esc(w.monthName)}</td><td class="center">Week ${w.w}</td><td class="num">${fmt(w.mp)}</td><td class="num">${fmt(w.mh)}</td><td class="num ${w.nm?'warn':'good'}">${fmt(w.nm)}</td><td class="num ${w.pd?'warn':'good'}">${fmt(w.pd)}</td><td class="num ${w.cr?'bad':'good'}">${fmt(w.cr)}</td><td class="num ${w.cb?'bad':'good'}">${fmt(w.cb)}</td><td class="num ${w.ft?'bad':'good'}">${fmt(w.ft)}</td><td class="num ${w.fire?'warn':'good'}">${fmt(w.fire)}</td><td class="num">${fmt(w.lostDays)}</td><td class="num">${fmtPct(r.irPct)}</td><td class="num">${fmtRate(r.ir200)}</td><td class="num">${fmtPct(r.frPct)}</td><td class="num">${fmtPct(r.srPct)}</td><td class="num">${fmt(w.ind)}</td><td class="num">${fmt(w.meet)}</td><td class="num">${fmt(w.insp)}</td><td class="num">${fmt(w.talk)}</td><td class="num">${fmt(w.clos)}</td></tr>`;}).join('')}</tbody></table>`;
+document.querySelectorAll('#weeklyTable tr[data-month][data-week]').forEach(tr=>tr.onclick=()=>{state.month=tr.dataset.month;state.week=tr.dataset.week;state.editYear=state.year;state.editMonth=tr.dataset.month;state.editWeek=num(tr.dataset.week);$('monthFilter').value=state.month;$('weekFilter').value=state.week;$('eYear').value=state.editYear;$('eMonth').value=state.editMonth;$('eWeek').value=state.editWeek;loadEntry();renderAll();$('entryForm').scrollIntoView({behavior:'smooth',block:'center'});});}
+
+function updInfo(wc,mc){const mt=state.month==='all'?'Semua Bulan':(MN[state.month]||state.month)+' '+state.year,wt=state.week==='all'?'Semua Minggu':'Week '+state.week;$('filterInfo').innerHTML=`Filter aktif: <strong>Tahun ${state.year}</strong>, <strong>${esc(mt)}</strong>, <strong>${esc(wt)}</strong>. Menampilkan <strong>${fmt(wc)}</strong> baris mingguan dari <strong>${fmt(mc)}</strong> bulan.`;}
+function renderAll(){const ws=filtW(),ms=dispM(),k=kpiOf(ws);renderKpi(k);renderCharts(ms);renderMon(ms);renderWeek(ws);updInfo(ws.length,ms.length);}
+
+function syncLabels(){['monthFilter','eMonth'].forEach(id=>{const sel=$(id);if(!sel)return;const y=id==='eMonth'?state.editYear:state.year;Array.from(sel.options).forEach(o=>{if(o.value!=='all'&&MN[o.value])o.textContent=MN[o.value]+' '+y;});});}
+function loadEntry(){const ms=ym(state.editYear),m=ms.find(x=>x.key===state.editMonth)||ms[0],w=m.weeks.find(x=>x.w===num(state.editWeek))||m.weeks[0];$('eYear').value=state.editYear;$('eMonth').value=m.key;$('eWeek').value=w.w;[['eMp','mp'],['eMh','mh'],['eNm','nm'],['ePd','pd'],['eCr','cr'],['eCb','cb'],['eFt','ft'],['eFire','fire'],['eLost','lostDays'],['eInd','ind'],['eMeet','meet'],['eInsp','insp'],['eTalk','talk'],['eClos','clos']].forEach(([id,k])=>$(id).value=num(w[k]));setStatus(`Form memuat data ${m.name} Week ${w.w}.`);}
+function clearEntry(){['eMp','eMh','eNm','ePd','eCr','eCb','eFt','eFire','eLost','eInd','eMeet','eInsp','eTalk','eClos'].forEach(id=>$(id).value=0);setStatus('Form dikosongkan.');}
+function readEntry(){return{w:num($('eWeek').value),mp:num($('eMp').value),mh:num($('eMh').value),nm:num($('eNm').value),pd:num($('ePd').value),cr:num($('eCr').value),cb:num($('eCb').value),ft:num($('eFt').value),fire:num($('eFire').value),lostDays:num($('eLost').value),ind:num($('eInd').value),meet:num($('eMeet').value),insp:num($('eInsp').value),talk:num($('eTalk').value),clos:num($('eClos').value)};}
+function saveEntry(){state.editYear=num($('eYear').value);state.editMonth=$('eMonth').value;state.editWeek=num($('eWeek').value);const ms=ym(state.editYear),m=ms.find(x=>x.key===state.editMonth);if(!m){setStatus('Bulan tidak ditemukan.');return;}const idx=state.editWeek-1;if(idx<0||idx>=m.weeks.length){setStatus('Minggu tidak valid.');return;}m.weeks[idx]=Object.assign({},m.weeks[idx],readEntry());cumAll();saveLocal();state.year=state.editYear;state.month=state.editMonth;state.week=String(state.editWeek);$('yearFilter').value=state.year;$('monthFilter').value=state.month;$('weekFilter').value=state.week;syncLabels();renderAll();setStatus(`Tersimpan: ${m.name} Week ${state.editWeek}. Dashboard diperbarui.`);}
+function clearAndSaveWeek(){clearEntry();saveEntry();}
+function resetYear(){if(!confirm(`Reset data tahun ${state.year}?`))return;DB.years[state.year]=emptyMonths(state.year);cumAll();saveLocal();state.month='all';state.week='all';$('monthFilter').value='all';$('weekFilter').value='all';syncLabels();loadEntry();renderAll();setStatus(`Tahun ${state.year} direset.`);}
+function resetAll(){if(!confirm('Reset semua tahun 2026-2040 ke awal?'))return;DB=freshDB();cumAll();saveLocal();state.year=START_YEAR;state.editYear=START_YEAR;state.month='all';state.week='all';state.editMonth='Jan';state.editWeek=1;$('yearFilter').value=state.year;$('eYear').value=state.editYear;$('monthFilter').value='all';$('weekFilter').value='all';$('eMonth').value='Jan';$('eWeek').value='1';syncLabels();loadEntry();renderAll();setStatus('Semua tahun direset.');}
+function exportJson(){dl(new Blob([JSON.stringify(DB,null,2)],{type:'application/json'}),`HSE_EKU_Data_${START_YEAR}_${END_YEAR}_${ts()}.json`);setStatus('JSON data diekspor.');}
+function importJson(file){const rd=new FileReader();rd.onload=e=>{try{DB=normLoad(JSON.parse(e.target.result));cumAll();saveLocal();state.year=num(DB.activeYear)||START_YEAR;state.editYear=state.year;state.month='all';state.week='all';state.editMonth='Jan';state.editWeek=1;$('yearFilter').value=state.year;$('eYear').value=state.editYear;$('monthFilter').value='all';$('weekFilter').value='all';syncLabels();loadEntry();renderAll();setStatus('JSON data diimpor.');}catch(err){setStatus('Gagal impor: '+err.message);}};rd.readAsText(file);}
+function exportSet(){dl(new Blob([JSON.stringify(SET,null,2)],{type:'application/json'}),`HSE_EKU_Setting_${ts()}.json`);}
+function importSet(file){const rd=new FileReader();rd.onload=e=>{try{SET=merge(JSON.parse(e.target.result),DEF_SET);saveSet();applyUI();syncSetForm();setStatus('Pengaturan diimpor.');}catch(err){setStatus('Gagal impor setting: '+err.message);}};rd.readAsText(file);}
+function resetSettings(){if(!confirm('Reset pengaturan tampilan ke default? Data HSE tidak hilang.'))return;SET=clone(DEF_SET);saveSet();applyUI();syncSetForm();setStatus('Pengaturan direset.');}
+function toggleSettings(f){const p=$('settingsPanel'),o=$('settingsOverlay'),op=f!==undefined?f:!p.classList.contains('open');p.classList.toggle('open',op);o.style.display=op?'block':'none';}
+
+function applyUI(){const c=SET.colors,r=document.documentElement;['accent','accent2','bg','bg2','card','text','muted','line','good','warn','bad','purple','pink','lime'].forEach(k=>r.style.setProperty('--'+k,c[k]));r.style.setProperty('--panel',rgba(c.card,.78));r.style.setProperty('--header',rgba(c.bg,.92));
+$('headerTitle').innerHTML=esc(SET.title)+'<span class="ver-badge">vEDIT-FINAL</span>';$('headerSubtitle').textContent=SET.subtitle;
+const li=$('logoImg'),lp=$('logoPreview');if(SET.logo&&SET.showLogo){li.src=SET.logo;li.style.display='inline-block';lp.src=SET.logo;lp.style.display='inline-block';}else{li.removeAttribute('src');li.style.display='none';lp.removeAttribute('src');lp.style.display='none';}
+$('mainActions').style.display=SET.showMainActions?'flex':'none';$('floatSettings').style.display=SET.showFloatButton?'flex':'none';
+$('filtersSection').style.display=SET.sections.filters?'':'none';$('inputSection').style.display=SET.sections.input?'':'none';$('kpiSection').style.display=SET.sections.kpi?'':'none';$('chartsSection').style.display=SET.sections.charts?'':'none';$('monthlySection').style.display=SET.sections.monthly?'':'none';$('weeklySection').style.display=SET.sections.weekly?'':'none';$('notesSection').style.display=SET.sections.notes?'':'none';
+$('filterSectionTitle').textContent=SET.texts.filterTitle;$('inputSectionTitle').textContent=SET.texts.inputTitle;$('inputSectionHint').textContent=SET.texts.inputHint;$('kpiSectionTitle').textContent=SET.texts.kpiTitle;$('chartSectionTitle').textContent=SET.texts.chartTitle;$('chartSectionHint').textContent=SET.texts.chartHint;$('monthlySectionTitle').textContent=SET.texts.monthlyTitle;$('monthlySectionHint').textContent=SET.texts.monthlyHint;$('weeklySectionTitle').textContent=SET.texts.weeklyTitle;$('weeklySectionHint').textContent=SET.texts.weeklyHint;$('notesTitle').textContent=SET.texts.notesTitle;$('sourceInfo').textContent=SET.texts.sourceInfo;$('notesBody').innerHTML=safeHtml(SET.texts.notesHtml);
+$('chartManHoursTitle').textContent=SET.texts.chartManHours;$('chartIncidentsTitle').textContent=SET.texts.chartIncidents;$('chartLeadingTitle').textContent=SET.texts.chartLeading;$('chartRatesTitle').textContent=SET.texts.chartRates;$('chartDonutTitle').textContent=SET.texts.chartDonut;$('chartLeadingDonutTitle').textContent=SET.texts.chartLeadingDonut;}
+
+function syncSetForm(){document.querySelectorAll('[data-setting]').forEach(el=>{const v=gp(SET,el.dataset.setting);if(el.type==='checkbox')el.checked=!!v;else el.value=v==null?'':v;});const lp=$('logoPreview');if(SET.logo){lp.src=SET.logo;lp.style.display='inline-block';}else{lp.removeAttribute('src');lp.style.display='none';}}
+function handleLogo(e){const f=e.target.files&&e.target.files[0];if(!f)return;const u=URL.createObjectURL(f),img=new Image();img.onload=()=>{const mw=260,mh=90;let w=img.width,h=img.height;const sc=Math.min(1,mw/w,mh/h);w=Math.max(1,Math.round(w*sc));h=Math.max(1,Math.round(h*sc));const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);SET.logo=cv.toDataURL('image/png');SET.showLogo=true;URL.revokeObjectURL(u);applyUI();syncSetForm();saveSet();setStatus('Logo dimuat & disimpan.');};img.onerror=()=>{URL.revokeObjectURL(u);setStatus('Gagal memuat logo.');};img.src=u;e.target.value='';}
+function applyPreset(n){const p=PRESETS[n];if(!p)return;SET.colors=Object.assign({},SET.colors,clone(p));applyUI();syncSetForm();saveSet();}
+function bindSet(){document.querySelectorAll('[data-setting]').forEach(el=>{const ev=(el.tagName==='SELECT'||el.type==='checkbox'||el.type==='color')?'change':'input';el.addEventListener(ev,()=>{const t=el.dataset.type||(el.type==='checkbox'?'bool':el.type==='color'?'color':'string');let v=t==='bool'?el.checked:t==='number'?Number(el.value):el.value;sp(SET,el.dataset.setting,v);applyUI();saveSet();});});$('logoFile').addEventListener('change',handleLogo);$('removeLogo').onclick=()=>{SET.logo='';applyUI();syncSetForm();saveSet();setStatus('Logo dihapus.');};document.querySelectorAll('.tab-btn').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-pane').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('tab-'+b.dataset.tab).classList.add('active');});document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>applyPreset(b.dataset.preset));$('importSettingsFile').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)importSet(f);e.target.value='';});}
+function initEvents(){$('yearFilter').onchange=e=>{state.year=num(e.target.value);state.editYear=state.year;state.month='all';state.week='all';$('monthFilter').value='all';$('weekFilter').value='all';$('eYear').value=state.year;syncLabels();loadEntry();renderAll();};$('monthFilter').onchange=e=>{state.month=e.target.value;renderAll();};$('weekFilter').onchange=e=>{state.week=e.target.value;renderAll();};$('searchBox').oninput=e=>{state.search=e.target.value;renderAll();};$('showZero').onchange=e=>{state.showZero=e.target.checked;renderAll();};$('eYear').onchange=e=>{state.editYear=num(e.target.value);syncLabels();loadEntry();};$('eMonth').onchange=e=>{state.editMonth=e.target.value;loadEntry();};$('eWeek').onchange=e=>{state.editWeek=num(e.target.value);loadEntry();};$('importFile').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)importJson(f);e.target.value='';});}
+function init(){SET=loadSet();applyUI();syncSetForm();bindSet();const s=loadData();DB=s||freshDB();state.year=num(DB.activeYear)||START_YEAR;state.editYear=state.year;cumAll();syncLabels();initEvents();loadEntry();renderAll();setStatus(s?'Data & pengaturan lama dimuat.':'Data default 2026 dimuat. Des & 2027-2040 siap input.');}
+let booted=false;function boot(){if(booted)return;booted=true;try{init();}catch(e){showError(e);}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+window.addEventListener('error',e=>showError(e.error||e.message));
+
+/* ===== EXCEL EXPORT MENIRU DASHBOARD ===== */
+const XS=`<Styles>
+<Style ss:ID="Default" ss:Name="Normal"><Alignment ss:Vertical="Center"/><Font ss:FontName="Calibri" ss:Size="11" ss:Color="#E6EDF7"/><Interior ss:Color="#0F172A" ss:Pattern="Solid"/></Style>
+<Style ss:ID="title"><Font ss:Bold="1" ss:Size="16" ss:Color="#FFFFFF"/><Interior ss:Color="#0F172A" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center"/></Style>
+<Style ss:ID="subtitle"><Font ss:Size="10" ss:Color="#94A3B8"/><Interior ss:Color="#111827" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+<Style ss:ID="section"><Font ss:Bold="1" ss:Size="12" ss:Color="#FFFFFF"/><Interior ss:Color="#1D4ED8" ss:Pattern="Solid"/><Alignment ss:Horizontal="Left" ss:Vertical="Center"/></Style>
+<Style ss:ID="filter"><Font ss:Size="10" ss:Color="#CBD5E1"/><Interior ss:Color="#182338" ss:Pattern="Solid"/><Alignment ss:Horizontal="Left" ss:Vertical="Center" ss:WrapText="1"/></Style>
+<Style ss:ID="cl"><Font ss:Bold="1" ss:Size="9" ss:Color="#94A3B8"/><Interior ss:Color="#182338" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+<Style ss:ID="cv"><Font ss:Bold="1" ss:Size="15" ss:Color="#E6EDF7"/><Interior ss:Color="#20304D" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+<Style ss:ID="cs"><Font ss:Size="8" ss:Color="#94A3B8"/><Interior ss:Color="#182338" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+<Style ss:ID="th"><Font ss:Bold="1" ss:Size="10" ss:Color="#DBEAFE"/><Interior ss:Color="#233554" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/></Style>
+<Style ss:ID="tt"><Font ss:Size="10" ss:Color="#E6EDF7"/><Interior ss:Color="#111827" ss:Pattern="Solid"/><Alignment ss:Horizontal="Left" ss:Vertical="Center"/></Style>
+<Style ss:ID="ti"><Font ss:Size="10" ss:Color="#E6EDF7"/><Interior ss:Color="#111827" ss:Pattern="Solid"/><Alignment ss:Horizontal="Right" ss:Vertical="Center"/><NumberFormat ss:Format="#,##0"/></Style>
+<Style ss:ID="tr"><Font ss:Size="10" ss:Color="#E6EDF7"/><Interior ss:Color="#111827" ss:Pattern="Solid"/><Alignment ss:Horizontal="Right" ss:Vertical="Center"/><NumberFormat ss:Format="0.000"/></Style>
+<Style ss:ID="ts"><Font ss:Bold="1" ss:Size="10" ss:Color="#22D3EE"/><Interior ss:Color="#111827" ss:Pattern="Solid"/><Alignment ss:Horizontal="Right" ss:Vertical="Center"/><NumberFormat ss:Format="#,##0"/></Style>
+<Style ss:ID="tg"><Font ss:Bold="1" ss:Size="10" ss:Color="#22C55E"/><Interior ss:Color="#111827" ss:Pattern="Solid"/><Alignment ss:Horizontal="Right" ss:Vertical="Center"/><NumberFormat ss:Format="#,##0"/></Style>
+<Style ss:ID="tw"><Font ss:Bold="1" ss:Size="10" ss:Color="#F59E0B"/><Interior ss:Color="#111827" ss:Pattern="Solid"/><Alignment ss:Horizontal="Right" ss:Vertical="Center"/><NumberFormat ss:Format="#,##0"/></Style>
+<Style ss:ID="tb"><Font ss:Bold="1" ss:Size="10" ss:Color="#EF4444"/><Interior ss:Color="#111827" ss:Pattern="Solid"/><Alignment ss:Horizontal="Right" ss:Vertical="Center"/><NumberFormat ss:Format="#,##0"/></Style>
+<Style ss:ID="note"><Font ss:Italic="1" ss:Size="9" ss:Color="#94A3B8"/><Interior ss:Color="#111827" ss:Pattern="Solid"/><Alignment ss:Horizontal="Left" ss:Vertical="Top" ss:WrapText="1"/></Style>
+<Style ss:ID="blank"><Interior ss:Color="#0F172A" ss:Pattern="Solid"/></Style>
+</Styles>`;
+function xc(v,st='tt',ma=0){const isN=typeof v==='number'&&Number.isFinite(v);return `<Cell ss:StyleID="${st}"${ma?` ss:MergeAcross="${ma}"`:''}><Data ss:Type="${isN?'Number':'String'}">${isN?v:escX(v??'')}</Data></Cell>`;}
+function xe(st='blank'){return `<Cell ss:StyleID="${st}"/>`;}
+function xr(cs,h){return `<Row${h?` ss:Height="${h}"`:''}>${cs.join('')}</Row>`;}
+function xm(t,st,n,h){const cs=[xc(t,st,n-1)];for(let i=1;i<n;i++)cs.push(xe(st));return xr(cs,h);}
+function xw(name,wd,rows){return `<Worksheet ss:Name="${escX(name)}"><Table>${wd.map(w=>`<Column ss:Width="${w}"/>`).join('')}${rows.join('')}</Table></Worksheet>`;}
+function sty(t,v){if(t==='int')return'ti';if(t==='rate')return'tr';if(t==='safe')return'ts';if(t==='warn')return num(v)>0?'tw':'tg';if(t==='bad')return num(v)>0?'tb':'tg';return'tt';}
+function addTbl(rows,cols,data,mc){const hd=cols.map(c=>xc(c.label,'th'));while(hd.length<mc)hd.push(xe('blank'));rows.push(xr(hd,28));if(!data.length){rows.push(xm('Tidak ada data','note',mc,22));return;}data.forEach(it=>{const cs=cols.map(c=>{const raw=c.get(it),t=c.type||'text';return xc(t==='text'?String(raw??''):num(raw),sty(t,raw));});while(cs.length<mc)cs.push(xe('blank'));rows.push(xr(cs));});}
+function addCards(rows,cards,mc){for(let i=0;i<cards.length;i+=4){const g=cards.slice(i,i+4);['cl','cv','cs'].forEach(st=>{const cs=[];g.forEach(c=>{cs.push(xc(c[st==='cl'?'label':st==='cv'?'value':'sub'],st));for(let j=1;j<4;j++)cs.push(xe(st));});while(cs.length<mc)cs.push(xe('blank'));rows.push(xr(cs,st==='cv'?30:st==='cs'?24:18));});rows.push(xr([xe('blank')],6));}}
+function mkTbl(name,cols,data,wd){const rows=[];addTbl(rows,cols,data,cols.length);return xw(name,wd,rows);}
+const MC=[{label:'Bulan',type:'text',get:m=>m.name},{label:'Aktif',type:'int',get:m=>m.activeWeeks},{label:'MP Avg',type:'int',get:m=>m.manpower},{label:'Man Hours',type:'int',get:m=>m.manHours},{label:'NM',type:'warn',get:m=>m.nm},{label:'PD',type:'warn',get:m=>m.pd},{label:'CR',type:'bad',get:m=>m.cr},{label:'CB',type:'bad',get:m=>m.cb},{label:'FT',type:'bad',get:m=>m.ft},{label:'Fire',type:'warn',get:m=>m.fire},{label:'Lost Day',type:'int',get:m=>m.lostDays},{label:'Total',type:'bad',get:m=>m.totalInc},{label:'IR %',type:'rate',get:m=>m.irPct},{label:'IR/200k',type:'rate',get:m=>m.ir200},{label:'FR %',type:'rate',get:m=>m.frPct},{label:'SR %',type:'rate',get:m=>m.srPct},{label:'Induction',type:'int',get:m=>m.induction},{label:'Meeting',type:'int',get:m=>m.meeting},{label:'Inspection',type:'int',get:m=>m.inspection},{label:'Talk',type:'int',get:m=>m.talk},{label:'Closure',type:'int',get:m=>m.closure},{label:'Start Safe',type:'safe',get:m=>m.startSafe},{label:'End Safe',type:'safe',get:m=>m.endSafe}];
+const WC=[{label:'Bulan',type:'text',get:w=>w.monthName},{label:'Week',type:'int',get:w=>w.w},{label:'MP',type:'int',get:w=>w.mp},{label:'MH',type:'int',get:w=>w.mh},{label:'NM',type:'warn',get:w=>w.nm},{label:'PD',type:'warn',get:w=>w.pd},{label:'CR',type:'bad',get:w=>w.cr},{label:'CB',type:'bad',get:w=>w.cb},{label:'FT',type:'bad',get:w=>w.ft},{label:'Fire',type:'warn',get:w=>w.fire},{label:'Lost Day',type:'int',get:w=>w.lostDays},{label:'IR %',type:'rate',get:w=>w.irPct},{label:'IR/200k',type:'rate',get:w=>w.ir200},{label:'FR %',type:'rate',get:w=>w.frPct},{label:'SR %',type:'rate',get:w=>w.srPct},{label:'Induction',type:'int',get:w=>w.ind},{label:'Meeting',type:'int',get:w=>w.meet},{label:'Inspection',type:'int',get:w=>w.insp},{label:'Talk',type:'int',get:w=>w.talk},{label:'Closure',type:'int',get:w=>w.clos}];
+const LC=[{label:'Bulan',type:'text',get:w=>w.monthName},{label:'Week',type:'int',get:w=>w.w},{label:'NM',type:'warn',get:w=>w.nm},{label:'PD',type:'warn',get:w=>w.pd},{label:'CR',type:'bad',get:w=>w.cr},{label:'CB',type:'bad',get:w=>w.cb},{label:'FT',type:'bad',get:w=>w.ft},{label:'Fire',type:'warn',get:w=>w.fire},{label:'Lost Day',type:'int',get:w=>w.lostDays},{label:'Total',type:'bad',get:w=>w.total},{label:'IR %',type:'rate',get:w=>w.irPct},{label:'IR/200k',type:'rate',get:w=>w.ir200},{label:'FR %',type:'rate',get:w=>w.frPct},{label:'SR %',type:'rate',get:w=>w.srPct}];
+const EC=[{label:'Bulan',type:'text',get:w=>w.monthName},{label:'Week',type:'int',get:w=>w.w},{label:'HSE Induction',type:'int',get:w=>w.ind},{label:'Safety Meeting',type:'int',get:w=>w.meet},{label:'HSE Inspection',type:'int',get:w=>w.insp},{label:'Safety Talk',type:'int',get:w=>w.talk},{label:'Action Closure',type:'int',get:w=>w.clos},{label:'Total Leading',type:'int',get:w=>num(w.ind)+num(w.meet)+num(w.insp)+num(w.talk)+num(w.clos)}];
+const SC=[{label:'Item',type:'text',get:r=>r.item},{label:'Nilai',type:'text',get:r=>r.nilai}];
+function exportExcel(){const ms=dispM(),wr=filtW(),ws=wr.map(w=>Object.assign({},w,rates(w))),k=kpiOf(wr),yd=ym(state.year),T=SET.texts,K=SET.kpi;const mt=state.month==='all'?'Semua Bulan':(MN[state.month]||state.month)+' '+state.year,wt=state.week==='all'?'Semua Minggu':'Week '+state.week,mc=23,rows=[];
+rows.push(xm(SET.title,'title',mc,34));rows.push(xm(`${SET.subtitle} | Tahun ${state.year} | ${mt} | ${wt} | ${new Date().toLocaleString('id-ID')}`,'subtitle',mc,24));rows.push(xr([xe('blank')],6));rows.push(xm(`Man Hours ${fmt(k.mh)} | Safe ${fmt(k.safeHours)} | Insiden ${fmt(k.totalInc)} | IR% ${fmtPct(k.irPct)} | IR/200k ${fmtRate(k.ir200)} | Leading ${fmt(k.leading)}`,'filter',mc,24));rows.push(xr([xe('blank')],6));rows.push(xm(T.kpiTitle.toUpperCase(),'section',mc,24));
+addCards(rows,[{label:K.manHours,value:fmt(k.mh),sub:'Jam kerja sesuai filter'},{label:K.safeHours,value:fmt(k.safeHours),sub:'Tanpa fatality / LTI'},{label:K.fatalityLti,value:`${fmt(k.ft)} / ${fmt(k.lti)}`,sub:'Target 0 / 0'},{label:K.totalInc,value:fmt(k.totalInc),sub:k.totalInc===0?'Zero Incident':fmt(k.totalInc)+' insiden'},{label:K.nmPd,value:`${fmt(k.nm)} / ${fmt(k.pd)}`,sub:`Fire ${fmt(k.fire)}, CR ${fmt(k.cr)}, CB ${fmt(k.cb)}`},{label:K.ir,value:fmtPct(k.irPct),sub:'IR/200k '+fmtRate(k.ir200)},{label:K.frSr,value:`${fmtPct(k.frPct)} / ${fmtPct(k.srPct)}`,sub:`FR/200k ${fmtRate(k.fr200)}`},{label:K.leading,value:fmt(k.leading),sub:`Ind ${fmt(k.induction)}, Meet ${fmt(k.meeting)}`}],mc);
+rows.push(xm(T.monthlyTitle.toUpperCase(),'section',mc,24));addTbl(rows,MC,ms,mc);rows.push(xr([xe('blank')],6));rows.push(xm(T.weeklyTitle.toUpperCase(),'section',mc,24));addTbl(rows,WC,ws,mc);rows.push(xr([xe('blank')],6));rows.push(xm('Catatan: Sheet Dashboard meniru bentuk dashboard HTML. Format .xls SpreadsheetML, buka di Excel lalu Save As .xlsx bila perlu.','note',mc,36));
+const dw=[26];for(let i=1;i<mc;i++)dw.push(15);const dash=xw('Dashboard',dw,rows);
+const mf=ym(state.year).map(sumM),wf=flat(state.year).map(w=>Object.assign({},w,rates(w)));const tmh=mf.reduce((a,m)=>a+m.manHours,0),tic=mf.reduce((a,m)=>a+m.totalInc,0),tle=mf.reduce((a,m)=>a+m.leading,0);
+const sd=[{item:'Judul',nilai:SET.title},{item:'Subtitle',nilai:SET.subtitle},{item:'Dibuat',nilai:new Date().toLocaleString('id-ID')},{item:'Tahun aktif',nilai:String(state.year)},{item:'Basis jam aman sblm Jan 2026',nilai:fmt(BASE_SAFE)},{item:`Start Safe ${state.year}`,nilai:fmt(num(yd.startSafe))},{item:`End Safe ${state.year}`,nilai:fmt(num(yd.endSafe))},{item:`Total Man Hours ${state.year}`,nilai:fmt(tmh)},{item:`Total Insiden ${state.year}`,nilai:fmt(tic)},{item:`Total Leading ${state.year}`,nilai:fmt(tle)}];
+const xml=`<?xml version="1.0" encoding="UTF-8"?>\n<?mso-application progid="Excel.Sheet"?>\n<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:html="http://www.w3.org/TR/REC-html40">\n${XS}\n${dash}\n${mkTbl('Ringkasan',SC,sd,[42,90])}\n${mkTbl('Bulanan',MC,mf,[24,10,10,12,8,10,8,8,10,8,10,10,10,12,10,10,12,12,12,10,12,14,14])}\n${mkTbl('Mingguan',WC,wf,[24,8,8,10,8,10,8,8,10,8,10,10,12,10,10,12,12,12,10,12])}\n${mkTbl('Lagging',LC,wf,[24,8,8,10,8,8,10,8,10,10,10,12,10,10])}\n${mkTbl('Leading',EC,wf,[24,8,14,14,14,12,14,14])}\n</Workbook>`;
+dl(new Blob([xml],{type:'application/vnd.ms-excel;charset=utf-8'}),`HSE_Dashboard_EKU_${state.year}_EDITABLE_${ts()}.xls`);setStatus('Excel diunduh. Buka di Excel, Save As .xlsx jika perlu.');}
+</script>
+</body>
+</html>
